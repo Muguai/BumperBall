@@ -39,6 +39,9 @@ public class BallCollision : NetworkBehaviour
         }
 
         print("This client collided with something " + this.OwnerClientId);
+
+        if (collision.gameObject.tag != "Player") return;
+
         thisClientID = this.OwnerClientId;
         Rigidbody otherRigidbody1 = collision.rigidbody;
 
