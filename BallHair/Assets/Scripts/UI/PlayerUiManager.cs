@@ -62,6 +62,6 @@ public class PlayerUiManager : NetworkBehaviour
     {
         print("HelloClientUI");
         GameObject child = playerUis[playerIndex].transform.GetChild(1).GetChild(0).gameObject;
-        child.GetComponentInChildren<RespawnTimer>().StartTimer();
+        child.GetComponentInChildren<RespawnTimer>().StartRespawnUiTimer();
     }
 }

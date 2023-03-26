@@ -7,6 +7,7 @@ public class PlayerMovement : NetworkBehaviour
 {
     private Rigidbody rb;
     private float speed = 1f;
+    private bool isMovementPaused = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +35,13 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        if (isMovementPaused)
+        {
+            rb.velocity = Vector3.zero;
+            return;
+        }
+            
+
         float directionHorzontal = Input.GetAxis("Horizontal");
         float directionVertical = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(directionHorzontal, 0, directionVertical);
@@ -55,5 +63,19 @@ public class PlayerMovement : NetworkBehaviour
             rb.AddForce(forceDirection * speed, ForceMode.Force);
         }
     }
-    
+
+    [ClientRpc]
+    public void PauseMovementClientRpc(bool set, ClientRpcParams clientRpcParams = default)
+    {
+        rb.velocity = Vector3.zero;
+        this.isMovementPaused = set;
+    }
+
+    [ClientRpc]
+    public void PutPlayersAtSpawnPosClientRPC(Vector3 point, ClientRpcParams clientRpcParams = default)
+    {
+        rb.velocity = Vector3.zero;
+        this.transform.position = point;
+    }
+
 }

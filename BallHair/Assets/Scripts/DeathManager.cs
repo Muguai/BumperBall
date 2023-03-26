@@ -81,6 +81,14 @@ public class DeathManager : NetworkBehaviour
             ulong clientID = nt.OwnerClientId;
             bool shouldRespawn = true;
 
+            if (!RoundManager.Instance.HasGameStarted())
+            {
+                nt.Interpolate = false;
+                StartCoroutine(RespawnPlayer(other.gameObject, clientID));
+                return;
+            }
+
+
             if (stocks)
             {
                 shouldRespawn = HandleStocks(clientID);
@@ -112,7 +120,6 @@ public class DeathManager : NetworkBehaviour
 
     private bool HandleStocks(ulong clientID)
     {
-
         if (playerStocks[clientID] > 0)
         {
             playerStocks[clientID] -= 1;

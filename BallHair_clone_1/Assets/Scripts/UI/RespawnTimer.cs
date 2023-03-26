@@ -18,10 +18,8 @@ public class RespawnTimer : MonoBehaviour
         countdownText.color = new Vector4(countdownText.color.r, countdownText.color.g, countdownText.color.b, 0f);
 
     }
-    public void StartTimer()
+    public void StartRespawnUiTimer()
     {
-        print("HelloClientUITIMER");
-
         StartCoroutine(TimerCoroutine());
     }
 
