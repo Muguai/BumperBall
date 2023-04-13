@@ -11,8 +11,6 @@ public class BallCollision : NetworkBehaviour
 {
     private float forceMultiplier = 2f;
     private float speedThreshold = 0f;
-
-    private float speedThreshold2 = 0f;
     private ulong thisClientID;
     Rigidbody rb;
     bool startCollision = false;
@@ -21,6 +19,8 @@ public class BallCollision : NetworkBehaviour
     float _mag;
     float _mass;
     Vector3 _forceDirection;
+
+    private ulong lastCollidedPlayer = 69;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,9 +45,11 @@ public class BallCollision : NetworkBehaviour
         thisClientID = this.OwnerClientId;
         Rigidbody otherRigidbody1 = collision.rigidbody;
 
-        if (otherRigidbody1 != null && startCollision == false)
+        if (otherRigidbody1 != null && startCollision == false && collision.gameObject.tag == "Player")
         {
+            
             NetworkRigidbody otherRigidbody = collision.gameObject.GetComponent<NetworkRigidbody>();
+            lastCollidedPlayer = otherRigidbody.OwnerClientId;
 
             print("This gets hit " +  thisClientID + " This is the hitter " + otherRigidbody.OwnerClientId);
 
@@ -114,5 +116,15 @@ public class BallCollision : NetworkBehaviour
             Debug.Log(" OtherRigidBodyVelocity: " + forceMagnitude + " VS SpeedThreshold: " + speedThreshold);
         }
         //rb.AddForce(forceDirection * forceMagnitude, ForceMode.Impulse);
+    }
+
+    public ulong GetLastCollidedPlayer()
+    {
+        return lastCollidedPlayer;
+    }
+
+    public void SetLastCollidedPlayer()
+    {
+        lastCollidedPlayer = 69;
     }
 }

@@ -6,59 +6,41 @@ using UnityEngine.UI;
 public class Stocks : MonoBehaviour
 {
     private int currentStockCount;
-    private int paddingWhenAlone = 45;
-    private int paddingIncrease = 6;
-    HorizontalLayoutGroup group;
-
-    private void Start()
-    {
-        group = this.GetComponent<HorizontalLayoutGroup>();
-    }
 
 
     public void SetStartStock()
     {
-        if(DeathManager.Instance.stocks == false)
+
+        if (GameModeManager.Instance.GM.GetGameMode() != "Stocks")
         {
             currentStockCount = 0;
-
-            int maxNumberOfPossibleStocks = DeathManager.Instance.GetMaxNumberOfStocks();
-            for (int i = 0; i < maxNumberOfPossibleStocks; i++)
+;
+            for (int i = 0; i < transform.childCount; i++)
             {
                 transform.GetChild(i).gameObject.SetActive(false);
             }
         }
         else
         {
-            int maxNumberOfPossibleStocks = DeathManager.Instance.GetMaxNumberOfStocks();
-            currentStockCount = DeathManager.Instance.numberOfStocks;
+            StocksGameMode SGM = (StocksGameMode)GameModeManager.Instance.GM;
+            int maxNumberOfPossibleStocks = SGM.GetNumberOfMaxStocks();
+            currentStockCount = SGM.GetNumberOfStocks();
             for (int i = maxNumberOfPossibleStocks; i > currentStockCount; i--)
             {
-                group.padding.left += paddingIncrease;
                 transform.GetChild(i - 1).gameObject.SetActive(false);
             }
-            if(currentStockCount == 1)
-            {
-                group.padding.left = paddingWhenAlone;
-            }
+
         }
 
 
-        
+
     }
 
     public void RemoveStock()
     {
         if (currentStockCount <= 0) return;
-
-        group.padding.left += paddingIncrease;
         
         transform.GetChild(currentStockCount - 1).gameObject.SetActive(false);
         currentStockCount--;
-
-        if(currentStockCount == 1)
-        {
-            group.padding.left = paddingWhenAlone;
-        }
     }
 }

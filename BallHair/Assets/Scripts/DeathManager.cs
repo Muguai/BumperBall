@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Components;
-
+using System.Linq;
 using UnityEngine.Events;
+using System;
 
 public class DeathManager : NetworkBehaviour
 {
@@ -13,19 +14,16 @@ public class DeathManager : NetworkBehaviour
 
     private bool[] playerIsDead;
     private Vector3[] playerRespawnPoints;
-
-    private int[] playerStocks;
-
-    [SerializeField]
-    public bool stocks { get; set; } = true;
-    public int numberOfStocks { get; private set; } = 4;
-
-    public const int MaxNumberOfStock = 6;
-
+    public Transform TestRespawnPos;
 
     [System.Serializable]
     public class PlayerDeathEvent : UnityEvent<ulong, bool> { }
     public PlayerDeathEvent onPlayerDeath;
+
+
+    [System.Serializable]
+    public class OneManLeftStanding : UnityEvent<ulong> { }
+    public OneManLeftStanding oneManLeftStanding;
 
     private static DeathManager _instance;
 
@@ -41,33 +39,12 @@ public class DeathManager : NetworkBehaviour
         {
             _instance = this;
         }
-
-        if(numberOfStocks > MaxNumberOfStock)
-        {
-            numberOfStocks = MaxNumberOfStock;
-        }
     }
 
 
     void Start()
     {
-        //Change these from 4 to amount of connected players later;
-        playerIsDead = new bool[4];
-        playerStocks = new int[4];
-
-        for (int i = 0; i < 4; i++)
-        {
-            playerStocks[i] = numberOfStocks;
-        }
-
-        int numChildren = this.transform.childCount;
-        playerRespawnPoints = new Vector3[numChildren];
-        for (int i = 0; i < numChildren; i++)
-        {
-            Transform childTransform = this.transform.GetChild(i);
-            playerRespawnPoints[i] = childTransform.position;
-        }
-
+        GameModeManager.Instance.onGameStart.AddListener(InitializeDeathVariables);
     }
 
     void OnTriggerEnter(Collider other)
@@ -81,17 +58,11 @@ public class DeathManager : NetworkBehaviour
             ulong clientID = nt.OwnerClientId;
             bool shouldRespawn = true;
 
-            if (!RoundManager.Instance.HasGameStarted())
+            if (!GameModeManager.Instance.HasGameStarted())
             {
                 nt.Interpolate = false;
-                StartCoroutine(RespawnPlayer(other.gameObject, clientID));
+                StartCoroutine(PreGameRespawnPlayer(other.gameObject, clientID));
                 return;
-            }
-
-
-            if (stocks)
-            {
-                shouldRespawn = HandleStocks(clientID);
             }
 
 
@@ -99,11 +70,38 @@ public class DeathManager : NetworkBehaviour
             playerIsDead[clientID] = true;
             Debug.Log("Player " + nt.gameObject.name + " has died.");
 
+            switch (GameModeManager.Instance.GM.GetGameMode())
+            {
+                case "Stocks":
+                    StocksGameMode SGM = (StocksGameMode)GameModeManager.Instance.GM;
+                    shouldRespawn = SGM.HandleStocksDeath(clientID);
+                    break;
+                case "Rounds":
+                    RoundGameMode RGM = (RoundGameMode)GameModeManager.Instance.GM;
+                    shouldRespawn = RGM.HandleRoundsDeath(clientID, playerIsDead);
+                    break;
+                case "Time":
+                    TimeGameMode TGM = (TimeGameMode)GameModeManager.Instance.GM;
+                    shouldRespawn = TGM.HandleTimeDeath(other.gameObject, clientID);
+                    break;
+            }
+
             if (!shouldRespawn) return;
 
             nt.Interpolate = false;
             StartCoroutine(RespawnPlayer(other.gameObject, clientID));
         }
+    }
+
+    IEnumerator PreGameRespawnPlayer(GameObject player, ulong playerIndex)
+    {
+
+        yield return new WaitForSeconds(respawnDelay);
+        print("Respawn");
+        player.transform.position = TestRespawnPos.position;
+        player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+        player.gameObject.GetComponent<NetworkTransform>().Interpolate = true;
     }
 
     IEnumerator RespawnPlayer(GameObject player, ulong playerIndex)
@@ -118,21 +116,21 @@ public class DeathManager : NetworkBehaviour
         player.gameObject.GetComponent<NetworkTransform>().Interpolate = true;
     }
 
-    private bool HandleStocks(ulong clientID)
+    public void InitializeDeathVariables(ulong NumberOfConnectedPlayers)
     {
-        if (playerStocks[clientID] > 0)
+        if (!IsServer) return;
+
+     
+
+        playerIsDead = new bool[NumberOfConnectedPlayers];
+
+        int numChildren = this.transform.childCount;
+        playerRespawnPoints = new Vector3[numChildren];
+        for (int i = 0; i < numChildren; i++)
         {
-            playerStocks[clientID] -= 1;
-            if (playerStocks[clientID] <= 0) return false;
-
-            return true;
+            Transform childTransform = this.transform.GetChild(i);
+            playerRespawnPoints[i] = childTransform.position;
         }
-
-        return false;
     }
 
-    public int GetMaxNumberOfStocks()
-    {
-        return MaxNumberOfStock;
-    }
 }

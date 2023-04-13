@@ -6,8 +6,12 @@ using Unity.Netcode;
 public class PlayerMovement : NetworkBehaviour
 {
     private Rigidbody rb;
-    private float speed = 1f;
+    private float speed = 2.5f;
     private bool isMovementPaused = false;
+
+    public Material[] materials;
+
+    public MeshRenderer playerHead;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +32,7 @@ public class PlayerMovement : NetworkBehaviour
 
             GetComponent<Rigidbody>().mass = 3f;
         }
+        this.playerHead.material = materials[this.OwnerClientId];
     }
 
     // Update is called once per frame

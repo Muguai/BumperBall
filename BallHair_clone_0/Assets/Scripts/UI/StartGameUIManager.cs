@@ -16,15 +16,16 @@ public class StartGameUIManager : NetworkBehaviour
     public class GameStartCountdownEvent : UnityEvent { }
     public GameStartCountdownEvent onGameStartCountdownDone;
 
+    private int roundsLeft = 3;
     // Start is called before the first frame update
     void Start()
     {
         startGame.SetActive(false);
-        RoundManager.Instance.onGameStart.AddListener(StartGameUI);
+        GameModeManager.Instance.onGameStart.AddListener(StartGameUI);
     }
 
 
-    public void StartGameUI()
+    public void StartGameUI(ulong numberOfPlayers)
     {
         StartCoroutine(TimerCoroutine());
 
@@ -34,18 +35,33 @@ public class StartGameUIManager : NetworkBehaviour
     {
         startGame.gameObject.SetActive(true);
         // Wait for the respawn delay
-        float remainingTime = RoundManager.Instance.startGameDelay;
+        float orgStartTime = GameModeManager.Instance.startGameDelay;
+        float remainingTime = orgStartTime;
 
         while (remainingTime > -1f)
         {
             if (remainingTime <= 0f)
             {
                 startText.text = "START";
+                
+               
             }
             else
             {
+
                 startText.text = $"{remainingTime:0}";
+
+                if (remainingTime > orgStartTime - 1)
+                {
+                    if (GameModeManager.Instance.GM.GetGameMode() == "Rounds")
+                    {
+                        startText.text = "Round: " + roundsLeft;
+                        roundsLeft = roundsLeft - 1;
+
+                    }
+                }
             }
+
             yield return new WaitForSeconds(1f);
             remainingTime -= 1f;
         }

@@ -30,7 +30,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4863464332061201835}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.98858607, z: 0, w: 0.15065701}
   m_LocalPosition: {x: 0, y: 2.65, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38,7 +38,7 @@ Transform:
   - {fileID: 8178542624696518417}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 162.67, z: 0}
 --- !u!135 &4863464332061201813
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -80,6 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 767c384f5c16e4b43b6b0baab29fec79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  materials:
+  - {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+  - {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
+  playerHead: {fileID: 3478816971166013601}
 --- !u!114 &911099524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,11 +220,11 @@ PrefabInstance:
     - target: {fileID: -7919293420028013713, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     - target: {fileID: -6802724845159606857, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     - target: {fileID: -6722085885383957590, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -236,7 +240,7 @@ PrefabInstance:
     - target: {fileID: -4157524182732408741, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: ad152a1458a1df04f81ae6661f407f3d, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     - target: {fileID: -4157524182732408741, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
@@ -244,11 +248,11 @@ PrefabInstance:
     - target: {fileID: -3950834430097377674, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     - target: {fileID: -1908886642311219353, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     - target: {fileID: -1853094968961178454, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -268,9 +272,14 @@ PrefabInstance:
     - target: {fileID: 6317578925029434746, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 90fc497f4573c1a4088185d002cf7457, type: 2}
+      objectReference: {fileID: 2100000, guid: 75c03f2f1ad0083449553d79b002a7d5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
+--- !u!23 &3478816971166013601 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4157524182732408741, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
+  m_PrefabInstance: {fileID: 8505817906814132474}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8178542624696518417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2c40772521891634da52df1e7e07b6e6, type: 3}
